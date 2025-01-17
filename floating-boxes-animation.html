@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animación de Banner</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+
+    .container {
+      position: relative;
+      width: 350px;
+      height: 600px;
+    }
+
+    .group {
+      position: absolute;
+      width: 350px;
+      height: 600px;
+      top: 0;
+      left: 0;
+    }
+
+    .floating-box {
+      width: 350px;
+      height: 600px;
+      background-color: #4CAF50;
+      border-radius: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      position: absolute;
+      opacity: 0; /* Inicialmente invisible */
+      visibility: hidden; /* Aseguramos que no sea visible al cargar */
+      animation: slideUp 1s ease-in-out 0s forwards, float 3s ease-in-out infinite 1s, slideUpOut 1s ease-in-out 4s forwards;
+      z-index: 3;
+    }
+
+    .floating-box.second {
+      background-color: #388E3C;
+      top: -20px;
+      right: -20px;
+      opacity: 0; /* Inicialmente invisible */
+      visibility: hidden; /* Aseguramos que no sea visible al cargar */
+      animation: slideUp 1s ease-in-out 0.4s forwards, float 3s ease-in-out infinite 1.4s, slideUpOut 1s ease-in-out 4.4s forwards;
+      z-index: 2;
+    }
+
+    .floating-box.third {
+      background-color: #2E7D32;
+      top: -40px;
+      right: -40px;
+      opacity: 0; /* Inicialmente invisible */
+      visibility: hidden; /* Aseguramos que no sea visible al cargar */
+      animation: slideUp 1s ease-in-out 0.8s forwards, float 3s ease-in-out infinite 1.8s, slideUpOut 1s ease-in-out 4.8s forwards;
+      z-index: 1;
+    }
+
+    /* Animación de aparecer desde abajo */
+    @keyframes slideUp {
+      0% { transform: translateY(150%); opacity: 1; visibility: visible; }
+      100% { transform: translateY(0); opacity: 1; visibility: visible; }
+    }
+
+    /* Animación de flotación */
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0); }
+    }
+
+    /* Animación de salida hacia arriba */
+    @keyframes slideUpOut {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(-150%); opacity: 0; }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Primer grupo de cajas que flotan y luego salen por arriba -->
+    <div class="group">
+      <div class="floating-box third">Proyecto 1</div>
+      <div class="floating-box second">Proyecto 2</div>
+      <div class="floating-box">Proyecto Destacado</div>
+    </div>
+  </div>
+
+<script>
+
+</script>
+</body>
+</html>
