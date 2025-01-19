@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Animación de Banner</title>
   <style>
+    :root {
+      --slide-up-duration: 1s;
+      --float-duration: 10s; /* Cambiar para ajustar la duración */
+      --slide-up-out-duration: 1s;
+      --float-delay: 2s;
+    }
+
     body, html {
       margin: 0;
       padding: 0;
@@ -50,14 +57,14 @@
       position: absolute;
       opacity: 0;
       visibility: hidden;
-      z-index: 3; /* Ajustado para que sea el más alto, si es el más destacado */
+      z-index: 3;
     }
 
     .group.active .floating-box {
       animation:
-        slideUp 1s ease-in-out forwards,
-        float 3s ease-in-out 2s infinite,
-        slideUpOut 1s ease-in-out 6.2s forwards;
+        slideUp var(--slide-up-duration) ease-in-out forwards,
+        float var(--float-duration) linear calc(var(--slide-up-duration) + var(--float-delay)) infinite,
+        slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) + var(--float-duration) + var(--float-delay)) forwards;
     }
 
     .group.active .floating-box.second {
@@ -65,9 +72,9 @@
       top: -20px;
       right: -20px;
       animation:
-        slideUp 1.4s ease-in-out 0.4s forwards,
-        float 3s ease-in-out 2.4s infinite,
-        slideUpOut 1s ease-in-out 6.6s forwards;
+        slideUp calc(var(--slide-up-duration) * 1.4) ease-in-out 0.4s forwards,
+        float var(--float-duration) linear calc(var(--slide-up-duration) * 1.4 + var(--float-delay)) infinite,
+        slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) * 1.4 + var(--float-duration) + var(--float-delay)) forwards;
       z-index: 2;
     }
 
@@ -76,21 +83,27 @@
       top: -40px;
       right: -40px;
       animation:
-        slideUp 1.8s ease-in-out 0.8s forwards,
-        float 3s ease-in-out 2.8s infinite,
-        slideUpOut 1s ease-in-out 7s forwards;
+        slideUp calc(var(--slide-up-duration) * 1.8) ease-in-out 0.8s forwards,
+        float var(--float-duration) linear calc(var(--slide-up-duration) * 1.8 + var(--float-delay)) infinite,
+        slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) * 1.8 + var(--float-duration) + var(--float-delay)) forwards;
       z-index: 1;
     }
 
-    /* Animaciones */
     @keyframes slideUp {
       0% { transform: translateY(150%); opacity: 0; visibility: visible; }
       100% { transform: translateY(0); opacity: 1; visibility: visible; }
     }
 
     @keyframes float {
-      0% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
+      0%, 20% { transform: translateY(0); }
+      10% { transform: translateY(-10px); }
+      30% { transform: translateY(10px); }
+      40% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+      60% { transform: translateY(0); }
+      70% { transform: translateY(15px); }
+      80% { transform: translateY(0); }
+      90% { transform: translateY(-10px); }
       100% { transform: translateY(0); }
     }
 
@@ -102,14 +115,12 @@
 </head>
 <body>
   <div class="container">
-    <!-- Primer grupo de cajas -->
     <div class="group active" id="group1">
       <div class="floating-box third">Proyecto 1</div>
       <div class="floating-box second">Proyecto 2</div>
       <div class="floating-box">Proyecto Destacado</div>
     </div>
 
-    <!-- Segundo grupo de cajas -->
     <div class="group" id="group2">
       <div class="floating-box third">Proyecto 4</div>
       <div class="floating-box second">Proyecto 5</div>
@@ -121,14 +132,31 @@
     const groups = document.querySelectorAll('.group');
     let activeIndex = 0;
 
+    const getCSSVariableValue = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) * 1000;
+
+    const updateFloatDuration = (durationSeconds) => {
+      document.documentElement.style.setProperty('--float-duration', `${durationSeconds}s`);
+      const slideUpDuration = getCSSVariableValue('--slide-up-duration');
+      const floatDuration = durationSeconds * 1000; // Convert to milliseconds
+      const slideUpOutDuration = getCSSVariableValue('--slide-up-out-duration');
+      const floatDelay = getCSSVariableValue('--float-delay');
+
+      const tiempoTotalAnimaciones = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
+
+      clearInterval(animationInterval);
+      animationInterval = setInterval(switchGroups, tiempoTotalAnimaciones);
+    };
+
+    let animationInterval;
+
     function switchGroups() {
       groups[activeIndex].classList.remove('active');
       activeIndex = (activeIndex + 1) % groups.length;
       groups[activeIndex].classList.add('active');
     }
 
-    // Inicializar la animación:
-    setInterval(switchGroups, 8000); // Ajustar al tiempo total de una secuencia de animaciones
+    // Cambia aquí si deseas iniciar con una diferente duración de flotado
+    updateFloatDuration(12);
   </script>
 </body>
 </html>
