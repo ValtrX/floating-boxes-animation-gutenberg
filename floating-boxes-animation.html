@@ -7,8 +7,8 @@
   <style>
     :root {
       --slide-up-duration: 1s;
-      --float-cycle-duration: 3s; /* Duración de un ciclo de flotación */
-      --float-duration: 12s; /* Tiempo total de flotación */
+      --float-cycle-duration: 3s; /* Inicialmente defino pero ajustable */
+      --float-duration: 12s; /* Tiempo total de flotación, ajustable */
       --slide-up-out-duration: 1s;
       --float-delay: 2s;
     }
@@ -96,15 +96,13 @@
     }
 
     @keyframes float {
-      0%, 20% { transform: translateY(0); }
-      10% { transform: translateY(-10px); }
-      30% { transform: translateY(10px); }
-      40% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-      60% { transform: translateY(0); }
-      70% { transform: translateY(15px); }
-      80% { transform: translateY(0); }
-      90% { transform: translateY(-10px); }
+      0%, 25% { transform: translateY(0); }
+      12.5% { transform: translateY(-10px); }
+      37.5% { transform: translateY(10px); }
+      50% { transform: translateY(0); }
+      62.5% { transform: translateY(-15px); }
+      75% { transform: translateY(0); }
+      87.5% { transform: translateY(15px); }
       100% { transform: translateY(0); }
     }
 
@@ -137,17 +135,22 @@
 
     const updateFloatSettings = (totalDuration, cycleDuration) => {
       document.documentElement.style.setProperty('--float-duration', `${totalDuration}s`);
-      document.documentElement.style.setProperty('--float-cycle-duration', `${cycleDuration}s`);
-      
+
+      let numberOfCycles = Math.floor(totalDuration / cycleDuration);
+      if (numberOfCycles === 0) numberOfCycles = 1; // Ensure at least one cycle
+
+      const floatCycleDuration = totalDuration / numberOfCycles;
+      document.documentElement.style.setProperty('--float-cycle-duration', `${floatCycleDuration}s`);
+
       const slideUpDuration = getCSSVariableValue('--slide-up-duration');
-      const floatDuration = totalDuration * 1000; // Convertir a milisegundos
+      const floatDuration = totalDuration * 1000;
       const slideUpOutDuration = getCSSVariableValue('--slide-up-out-duration');
       const floatDelay = getCSSVariableValue('--float-delay');
-      
-      const tiempoTotalAnimaciones = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
+
+      const totalAnimationsTime = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
 
       clearInterval(animationInterval);
-      animationInterval = setInterval(switchGroups, tiempoTotalAnimaciones);
+      animationInterval = setInterval(switchGroups, totalAnimationsTime);
     };
 
     let animationInterval;
@@ -159,7 +162,7 @@
     }
 
     // Configura las duraciones aquí
-    updateFloatSettings(20, 6); // Total de 12s con ciclos de 3s
+    updateFloatSettings(18, 6); // Por ejemplo, 18s total con ciclos de 3s
   </script>
 </body>
 </html>
