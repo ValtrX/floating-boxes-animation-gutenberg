@@ -7,10 +7,13 @@
   <style>
     :root {
       --slide-up-duration: 1s;
-      --float-cycle-duration: 3s; /* Inicialmente defino pero ajustable */
-      --float-duration: 12s; /* Tiempo total de flotación, ajustable */
+      --float-cycle-duration: 3s;
+      --float-duration: 18s;
       --slide-up-out-duration: 1s;
       --float-delay: 2s;
+      --spacing: 20px;
+      --box-width: 350px; /* Tamaño inicial del ancho */
+      --box-height: 600px; /* Tamaño inicial de la altura */
     }
 
     body, html {
@@ -46,8 +49,10 @@
     }
 
     .floating-box {
-      width: 350px;
-      height: 600px;
+      top: 0;
+      right: 0;
+      width: var(--box-width);
+      height: var(--box-height);
       background-color: #4CAF50;
       border-radius: 20px;
       display: flex;
@@ -62,6 +67,8 @@
     }
 
     .group.active .floating-box {
+      top: 0;
+  right: 0;
       animation:
         slideUp var(--slide-up-duration) ease-in-out forwards,
         float var(--float-cycle-duration) linear calc(var(--slide-up-duration) + var(--float-delay)) infinite,
@@ -69,9 +76,11 @@
     }
 
     .group.active .floating-box.second {
+      top: calc(-1 * var(--spacing));
+      right: calc(-1 * var(--spacing));
       background-color: #388E3C;
-      top: -20px;
-      right: -20px;
+      top: calc(-1 * var(--spacing));
+      right: calc(-1 * var(--spacing));
       animation:
         slideUp calc(var(--slide-up-duration) * 1.4) ease-in-out 0.4s forwards,
         float var(--float-cycle-duration) linear calc(var(--slide-up-duration) * 1.4 + var(--float-delay)) infinite,
@@ -81,8 +90,8 @@
 
     .group.active .floating-box.third {
       background-color: #2E7D32;
-      top: -40px;
-      right: -40px;
+      top: calc(-2 * var(--spacing));
+      right: calc(-2 * var(--spacing));
       animation:
         slideUp calc(var(--slide-up-duration) * 1.8) ease-in-out 0.8s forwards,
         float var(--float-cycle-duration) linear calc(var(--slide-up-duration) * 1.8 + var(--float-delay)) infinite,
@@ -133,11 +142,14 @@
 
     const getCSSVariableValue = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) * 1000;
 
-    const updateFloatSettings = (totalDuration, cycleDuration) => {
+    const updateFloatSettings = (totalDuration, cycleDuration, spacing, boxWidth, boxHeight) => {
       document.documentElement.style.setProperty('--float-duration', `${totalDuration}s`);
+      document.documentElement.style.setProperty('--spacing', `${spacing}px`);
+      document.documentElement.style.setProperty('--box-width', `${boxWidth}px`);
+      document.documentElement.style.setProperty('--box-height', `${boxHeight}px`);
 
       let numberOfCycles = Math.floor(totalDuration / cycleDuration);
-      if (numberOfCycles === 0) numberOfCycles = 1; // Ensure at least one cycle
+      if (numberOfCycles === 0) numberOfCycles = 1;
 
       const floatCycleDuration = totalDuration / numberOfCycles;
       document.documentElement.style.setProperty('--float-cycle-duration', `${floatCycleDuration}s`);
@@ -147,10 +159,10 @@
       const slideUpOutDuration = getCSSVariableValue('--slide-up-out-duration');
       const floatDelay = getCSSVariableValue('--float-delay');
 
-      const totalAnimationsTime = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
+      const animationsTotalTime = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
 
       clearInterval(animationInterval);
-      animationInterval = setInterval(switchGroups, totalAnimationsTime);
+      animationInterval = setInterval(switchGroups, animationsTotalTime);
     };
 
     let animationInterval;
@@ -161,8 +173,8 @@
       groups[activeIndex].classList.add('active');
     }
 
-    // Configura las duraciones aquí
-    updateFloatSettings(18, 6); // Por ejemplo, 18s total con ciclos de 3s
+    // Configura las duraciones, el espacio y el tamaño de las cajas aquí
+    updateFloatSettings(18, 6, 40, 300, 500); // Ejemplo: 18s total, ciclos de 3s, 40px spacing, 300x500px box size
   </script>
 </body>
 </html>
