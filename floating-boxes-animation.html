@@ -7,7 +7,8 @@
   <style>
     :root {
       --slide-up-duration: 1s;
-      --float-duration: 10s; /* Cambiar para ajustar la duración */
+      --float-cycle-duration: 3s; /* Duración de un ciclo de flotación */
+      --float-duration: 12s; /* Tiempo total de flotación */
       --slide-up-out-duration: 1s;
       --float-delay: 2s;
     }
@@ -63,7 +64,7 @@
     .group.active .floating-box {
       animation:
         slideUp var(--slide-up-duration) ease-in-out forwards,
-        float var(--float-duration) linear calc(var(--slide-up-duration) + var(--float-delay)) infinite,
+        float var(--float-cycle-duration) linear calc(var(--slide-up-duration) + var(--float-delay)) infinite,
         slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) + var(--float-duration) + var(--float-delay)) forwards;
     }
 
@@ -73,7 +74,7 @@
       right: -20px;
       animation:
         slideUp calc(var(--slide-up-duration) * 1.4) ease-in-out 0.4s forwards,
-        float var(--float-duration) linear calc(var(--slide-up-duration) * 1.4 + var(--float-delay)) infinite,
+        float var(--float-cycle-duration) linear calc(var(--slide-up-duration) * 1.4 + var(--float-delay)) infinite,
         slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) * 1.4 + var(--float-duration) + var(--float-delay)) forwards;
       z-index: 2;
     }
@@ -84,7 +85,7 @@
       right: -40px;
       animation:
         slideUp calc(var(--slide-up-duration) * 1.8) ease-in-out 0.8s forwards,
-        float var(--float-duration) linear calc(var(--slide-up-duration) * 1.8 + var(--float-delay)) infinite,
+        float var(--float-cycle-duration) linear calc(var(--slide-up-duration) * 1.8 + var(--float-delay)) infinite,
         slideUpOut var(--slide-up-out-duration) ease-in-out calc(var(--slide-up-duration) * 1.8 + var(--float-duration) + var(--float-delay)) forwards;
       z-index: 1;
     }
@@ -134,13 +135,15 @@
 
     const getCSSVariableValue = (name) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) * 1000;
 
-    const updateFloatDuration = (durationSeconds) => {
-      document.documentElement.style.setProperty('--float-duration', `${durationSeconds}s`);
+    const updateFloatSettings = (totalDuration, cycleDuration) => {
+      document.documentElement.style.setProperty('--float-duration', `${totalDuration}s`);
+      document.documentElement.style.setProperty('--float-cycle-duration', `${cycleDuration}s`);
+      
       const slideUpDuration = getCSSVariableValue('--slide-up-duration');
-      const floatDuration = durationSeconds * 1000; // Convert to milliseconds
+      const floatDuration = totalDuration * 1000; // Convertir a milisegundos
       const slideUpOutDuration = getCSSVariableValue('--slide-up-out-duration');
       const floatDelay = getCSSVariableValue('--float-delay');
-
+      
       const tiempoTotalAnimaciones = slideUpDuration + floatDuration + slideUpOutDuration + floatDelay + 1000;
 
       clearInterval(animationInterval);
@@ -155,8 +158,8 @@
       groups[activeIndex].classList.add('active');
     }
 
-    // Cambia aquí si deseas iniciar con una diferente duración de flotado
-    updateFloatDuration(12);
+    // Configura las duraciones aquí
+    updateFloatSettings(20, 6); // Total de 12s con ciclos de 3s
   </script>
 </body>
 </html>
