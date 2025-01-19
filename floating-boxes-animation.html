@@ -27,6 +27,14 @@
       height: 600px;
       top: 0;
       left: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 1s, visibility 1s;
+    }
+
+    .group.active {
+      opacity: 1;
+      visibility: visible;
     }
 
     .floating-box {
@@ -40,65 +48,87 @@
       color: white;
       font-size: 24px;
       position: absolute;
-      opacity: 0; /* Inicialmente invisible */
-      visibility: hidden; /* Aseguramos que no sea visible al cargar */
-      animation: slideUp 1s ease-in-out 0s forwards, float 3s ease-in-out infinite 1s, slideUpOut 1s ease-in-out 4s forwards;
-      z-index: 3;
+      opacity: 0;
+      visibility: hidden;
+      z-index: 3; /* Ajustado para que sea el más alto, si es el más destacado */
     }
 
-    .floating-box.second {
+    .group.active .floating-box {
+      animation:
+        slideUp 1s ease-in-out forwards,
+        float 3s ease-in-out 2s infinite,
+        slideUpOut 1s ease-in-out 6.2s forwards;
+    }
+
+    .group.active .floating-box.second {
       background-color: #388E3C;
       top: -20px;
       right: -20px;
-      opacity: 0; /* Inicialmente invisible */
-      visibility: hidden; /* Aseguramos que no sea visible al cargar */
-      animation: slideUp 1s ease-in-out 0.4s forwards, float 3s ease-in-out infinite 1.4s, slideUpOut 1s ease-in-out 4.4s forwards;
+      animation:
+        slideUp 1.4s ease-in-out 0.4s forwards,
+        float 3s ease-in-out 2.4s infinite,
+        slideUpOut 1s ease-in-out 6.6s forwards;
       z-index: 2;
     }
 
-    .floating-box.third {
+    .group.active .floating-box.third {
       background-color: #2E7D32;
       top: -40px;
       right: -40px;
-      opacity: 0; /* Inicialmente invisible */
-      visibility: hidden; /* Aseguramos que no sea visible al cargar */
-      animation: slideUp 1s ease-in-out 0.8s forwards, float 3s ease-in-out infinite 1.8s, slideUpOut 1s ease-in-out 4.8s forwards;
+      animation:
+        slideUp 1.8s ease-in-out 0.8s forwards,
+        float 3s ease-in-out 2.8s infinite,
+        slideUpOut 1s ease-in-out 7s forwards;
       z-index: 1;
     }
 
-    /* Animación de aparecer desde abajo */
+    /* Animaciones */
     @keyframes slideUp {
-      0% { transform: translateY(150%); opacity: 1; visibility: visible; }
+      0% { transform: translateY(150%); opacity: 0; visibility: visible; }
       100% { transform: translateY(0); opacity: 1; visibility: visible; }
     }
 
-    /* Animación de flotación */
     @keyframes float {
       0% { transform: translateY(0); }
       50% { transform: translateY(-20px); }
       100% { transform: translateY(0); }
     }
 
-    /* Animación de salida hacia arriba */
     @keyframes slideUpOut {
-      0% { transform: translateY(0); opacity: 1; }
-      100% { transform: translateY(-150%); opacity: 0; }
+      0% { transform: translateY(0); opacity: 1; visibility: visible; }
+      100% { transform: translateY(-150%); opacity: 0; visibility: hidden; }
     }
-
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Primer grupo de cajas que flotan y luego salen por arriba -->
-    <div class="group">
+    <!-- Primer grupo de cajas -->
+    <div class="group active" id="group1">
       <div class="floating-box third">Proyecto 1</div>
       <div class="floating-box second">Proyecto 2</div>
       <div class="floating-box">Proyecto Destacado</div>
     </div>
+
+    <!-- Segundo grupo de cajas -->
+    <div class="group" id="group2">
+      <div class="floating-box third">Proyecto 4</div>
+      <div class="floating-box second">Proyecto 5</div>
+      <div class="floating-box">Proyecto Destacado 2</div>
+    </div>
   </div>
 
-<script>
+  <script>
+    const groups = document.querySelectorAll('.group');
+    let activeIndex = 0;
 
-</script>
+    function switchGroups() {
+      groups[activeIndex].classList.remove('active');
+      activeIndex = (activeIndex + 1) % groups.length;
+      groups[activeIndex].classList.add('active');
+    }
+
+    // Inicializar la animación:
+    setInterval(switchGroups, 8000); // Ajustar al tiempo total de una secuencia de animaciones
+  </script>
 </body>
 </html>
